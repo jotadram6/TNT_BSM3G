@@ -53,3 +53,15 @@ In order to use the code you need to follow carefully these steps:
 
 8. In the python directory, there is file called miniAODv2_8025_*.py (name specifies which file is appropriate)
    8.1 You can run it with CMSSW (make sure it runs on a valid miniOADv2): cmsRun miniAODv2_8025_MC.py
+
+#####################################################################
+#                   Splitting signal samples                        #
+#####################################################################
+
+To obtain exclusive signal points from offical signal samples one has to first create the ntuples and then use the script python/ModelSplitter.py to slpit the root files in exclusive samples.
+
+To run just do: python ModelSplitter.py
+
+Take care of changing the input files and setting the base path of the output files that will be produced.
+
+The python script will create automatically root files named with the name used in the official production.

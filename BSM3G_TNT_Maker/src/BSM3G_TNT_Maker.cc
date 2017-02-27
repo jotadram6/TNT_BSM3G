@@ -38,6 +38,10 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if( _fillPVinfo)           pvselector        = new PVSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if( _fillMETinfo)          metselector       = new METSelector("miniAOD", tree_, debug_, iConfig, consumesCollector());
   if(_fillphotoninfo)        photonselector    = new PhotonSelector("miniAOD", tree_, debug_, iConfig, consumesCollector()); 
+
+  configToken = consumes<GenLumiInfoHeader,edm::InLumi>(edm::InputTag("generator",""));
+  //TBranch *GenConfigBranch = tree_->Branch("configmodel", &model, "configmodel/B");
+  tree_->Branch("configmodel", &model);//, "configmodel/B");
 }
 
 
@@ -72,7 +76,7 @@ BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   if( _fillPVinfo)           pvselector->Fill(iEvent);
   if( _fillMETinfo)          metselector->Fill(iEvent);
   if( _fillphotoninfo)       photonselector->Fill(iEvent);
- 
+
   tree_->Fill();
 #ifdef THIS_IS_AN_EVENT_EXAMPLE
   Handle<ExampleData> pIn;
@@ -84,6 +88,18 @@ BSM3G_TNT_Maker::analyze(const edm::Event& iEvent, const edm::EventSetup& iSetup
   iSetup.get<SetupRecord>().get(pSetup);
 #endif
 }
+
+/*void
+BSM3G_TNT_Maker::analyze(edm::LuminosityBlock const& iLumi)
+{
+  using namespace edm;
+  using namespace pat;
+  using namespace reco;
+
+  beginLuminosityBlock(iLumi);
+  
+  }*/
+
 
 // ------------ method called once each job just before starting event loop  ------------
 void 
@@ -116,20 +132,20 @@ BSM3G_TNT_Maker::beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup)
 */
 
 // ------------ method called when starting to processes a luminosity block  ------------
-/*
-  void 
-  BSM3G_TNT_Maker::beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-  {
-  }
-*/
-
+void 
+BSM3G_TNT_Maker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iEventSetup)
+{
+  iLumi.getByToken(configToken,gen_header);
+  model = gen_header->configDescription();
+  std::cout << model << std::endl;  // prints, e.g. T1tttt_1500_100
+  //AddBranch(&model            ,"configmodel");
+}
 // ------------ method called when ending the processing of a luminosity block  ------------
-/*
-  void 
-  BSM3G_TNT_Maker::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
-  {
-  }
-*/
+
+void 
+BSM3G_TNT_Maker::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+{
+}
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
 void

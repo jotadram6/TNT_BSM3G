@@ -19,6 +19,7 @@
 <use name="DataFormats/METReco"/>
 <use name="DataFormats/TrackReco"/>
 <use name="DataFormats/ParticleFlowCandidate"/>
+<use name="SimDataFormats/GeneratorProducts"/>
 <use name="CommonTools/CandUtils"/>
 <use name="CommonTools/Statistics"/>
 <use name="CommonTools/ParticleFlow"/>

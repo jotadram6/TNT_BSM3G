@@ -27,6 +27,7 @@ void GenEventWeightSelector::Fill(const edm::Event& iEvent){
     weightevt = genEvt->weight();
   
     if(debug_) std::cout << "     GenEventWeightSelector: Extracted the event weight." << std::endl;
+
   }
 }
 

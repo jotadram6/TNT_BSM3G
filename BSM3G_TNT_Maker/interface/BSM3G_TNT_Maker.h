@@ -20,6 +20,9 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/Framework/interface/EventSetup.h"
+///////////////    NEW   //////////////////
+#include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
+///////////////////////////////////////////
 #include "NtupleMaker/BSM3G_TNT_Maker/interface/TriggerSelector.h"
 #include "NtupleMaker/BSM3G_TNT_Maker/interface/MuonSelector.h"
 #include "NtupleMaker/BSM3G_TNT_Maker/interface/TauSelector.h"
@@ -63,6 +66,8 @@ private:
   virtual void beginRun(edm::Run const &, edm::EventSetup const&);
   virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
+  virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
+  virtual void endLuminosityBlock(edm::LuminosityBlock const&, const edm::EventSetup&) override;
 
   // ----------member data ---------------------------
   
@@ -94,6 +99,11 @@ private:
   METSelector            *metselector;
   ElectronPatSelector    *elpatselector;
   PhotonSelector         *photonselector;
+
+  edm::EDGetTokenT<GenLumiInfoHeader> configToken;
+  edm::Handle<GenLumiInfoHeader> gen_header;
+  string model;
+
 };
 
 #endif 

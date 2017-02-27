@@ -6,6 +6,18 @@
 
 RunInfoSelector::RunInfoSelector(std::string name, TTree* tree, bool debug, const pset& iConfig):baseTree(name,tree,debug) {
   if(debug) std::cout << "BSM3G TNT Maker: In the RunInfoSelector Constructor --> calling SetBranches()." << std::endl;
+  /*
+  edm::Handle<GenEventInfoProduct> genEvt;
+  iEvent.getByToken(generatorToken_,genEvt);
+  weightevt = genEvt->weight();
+ 
+  if(debug_) std::cout << "     GenEventWeightSelector: Extracted the event weight." << std::endl;
+  
+  edm::Handle<GenLumiInfoHeader> gen_header;
+  iLumi.getByToken(genLumiHeader_, gen_header);
+  string model = gen_header->configDescription();
+  std::cout << model << std::endl;
+  */
   SetBranches();
 }
 
@@ -43,3 +55,12 @@ void RunInfoSelector::Clear(){
   eventNumber = -1;
   lumiBlock = -1;
 }
+
+/*void beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iEventSetup){
+  genLumiHeader_ = iCC.consumes<GenLumiInfoHeader>(iConfig.getParameter<edm::InputTag>("genmodelinfo"));
+  edm::Handle<GenLumiInfoHeader> gen_header;
+  iLumi.getByToken(genLumiHeader_, gen_header);
+  string model = gen_header->configDescription();
+  std::cout << model << std::endl;  // prints, e.g. T1tttt_1500_100
+  }*/
+

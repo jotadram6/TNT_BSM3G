@@ -53,6 +53,9 @@
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+///////////////    NEW   //////////////////
+//#include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
+///////////////////////////////////////////
 #include "CLHEP/Random/RandGauss.h"
 #include "CLHEP/Units/GlobalPhysicalConstants.h"
 #include "CommonTools/CandUtils/interface/Booster.h"
@@ -102,9 +105,12 @@ class RunInfoSelector : public baseTree{
   void Fill(const edm::Event& iEvent);
   void SetBranches();
   void Clear();
+  //void beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iEventSetup);
 
  private:
   RunInfoSelector(){};
+
+  //edm::EDGetTokenT<GenLumiInfoHeader> genLumiHeader_;
 
  //variables which would become branches
  int runNumber, eventNumber, lumiBlock;

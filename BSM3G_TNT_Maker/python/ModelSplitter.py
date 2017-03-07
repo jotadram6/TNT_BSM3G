@@ -32,11 +32,12 @@ print Models
 del(ModelsHisto)
 for i in Models:
     #print "Processing ... "+i
-    #if Models.index(i)<90 or Models.index(i)>=95: continue
-    SkimmedTree = MainChain.CopyTree('strstr(configmodel.c_str(),\"'+i+'\")')
+    #if Models.index(i)<1 or Models.index(i)>=11: continue
     output = ROOT.TFile.Open(i+".root","RECREATE")
     output.mkdir("TNT"); output.cd("TNT")
-    SkimmedTree.Write()
-    print "Total entries for ", i, SkimmedTree.GetEntries() 
+    SkimmedTree = MainChain.CopyTree('strstr(configmodel.c_str(),\"'+i+'\")')
+    output = SkimmedTree.GetCurrentFile()
+    output.Write()
+    print "Total entries for", i, SkimmedTree.GetEntries() 
     output.Close()
     del(SkimmedTree); del(output)

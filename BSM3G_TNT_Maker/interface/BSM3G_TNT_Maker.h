@@ -22,6 +22,7 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 ///////////////    NEW   //////////////////
 #include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoHeader.h"
+#include "SimDataFormats/GeneratorProducts/interface/GenLumiInfoProduct.h"
 ///////////////////////////////////////////
 #include "NtupleMaker/BSM3G_TNT_Maker/interface/TriggerSelector.h"
 #include "NtupleMaker/BSM3G_TNT_Maker/interface/MuonSelector.h"
@@ -67,7 +68,7 @@ private:
   virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
   virtual void beginLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
-  virtual void endLuminosityBlock(edm::LuminosityBlock const&, const edm::EventSetup&) override;
+  virtual void endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&) override;
 
   // ----------member data ---------------------------
   
@@ -102,8 +103,11 @@ private:
 
   edm::EDGetTokenT<GenLumiInfoHeader> configToken;
   edm::Handle<GenLumiInfoHeader> gen_header;
+  edm::EDGetTokenT<GenLumiInfoProduct> genLumiInfoToken_;
+  edm::Handle<GenLumiInfoProduct> genLumiInfo;
   string model;
-
+  double xsec;
+  double xsecerr;
 };
 
 #endif 

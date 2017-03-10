@@ -40,8 +40,11 @@ BSM3G_TNT_Maker::BSM3G_TNT_Maker(const edm::ParameterSet& iConfig):
   if(_fillphotoninfo)        photonselector    = new PhotonSelector("miniAOD", tree_, debug_, iConfig, consumesCollector()); 
 
   configToken = consumes<GenLumiInfoHeader,edm::InLumi>(edm::InputTag("generator",""));
+  genLumiInfoToken_ = consumes<GenLumiInfoProduct,edm::InLumi>(edm::InputTag("generator",""));
   //TBranch *GenConfigBranch = tree_->Branch("configmodel", &model, "configmodel/B");
   tree_->Branch("configmodel", &model);//, "configmodel/B");
+  tree_->Branch("xsec", &xsec, "xsec/D");
+  tree_->Branch("xsecerr", &xsecerr, "xsecerr/D");
 }
 
 
@@ -135,16 +138,56 @@ BSM3G_TNT_Maker::beginRun(edm::Run const & iRun, edm::EventSetup const& iSetup)
 void 
 BSM3G_TNT_Maker::beginLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iEventSetup)
 {
+  //Model info
   iLumi.getByToken(configToken,gen_header);
   model = gen_header->configDescription();
   std::cout << model << std::endl;  // prints, e.g. T1tttt_1500_100
-  //AddBranch(&model            ,"configmodel");
+  /*  //XS info
+  iLumi.getByToken(genLumiInfoToken_,genLumiInfo);
+  std::vector<GenLumiInfoProduct::ProcessInfo> theProcesses = genLumiInfo->getProcessInfos();
+  unsigned int theProcesses_size = theProcesses.size();
+  //unsigned int vectorSize = iLumiInfo.getProcessInfos().size();
+  double sigSelSum = 0.0;
+  double err2SelSum = 0.0;
+  //for(unsigned int ip=0; ip < vectorSize; ip++){
+    //GenLumiInfoProduct::ProcessInfo proc = iLumiInfo.getProcessInfos()[ip];
+  for(unsigned int ip=0; ip < theProcesses_size; ip++){
+    GenLumiInfoProduct::ProcessInfo proc = theProcesses[ip];
+    double hepxsec_value = proc.lheXSec().value();
+    double hepxsec_error = proc.lheXSec().error() <= 0? 0:proc.lheXSec().error();
+    sigSelSum += hepxsec_value;
+    err2SelSum += hepxsec_error*hepxsec_error;
+  }
+  //XS assuming jet matching efficiency = 1
+  xsec     = sigSelSum;
+  xsecerr  = (sigSelSum > 0)? xsec*sqrt(err2SelSum/sigSelSum/sigSelSum):0;
+  */
 }
 // ------------ method called when ending the processing of a luminosity block  ------------
 
 void 
-BSM3G_TNT_Maker::endLuminosityBlock(edm::LuminosityBlock const&, edm::EventSetup const&)
+BSM3G_TNT_Maker::endLuminosityBlock(edm::LuminosityBlock const& iLumi, edm::EventSetup const& iEventSetup)
 {
+  //XS info
+  iLumi.getByToken(genLumiInfoToken_,genLumiInfo);
+  std::vector<GenLumiInfoProduct::ProcessInfo> theProcesses = genLumiInfo->getProcessInfos();
+  unsigned int theProcesses_size = theProcesses.size();
+  //unsigned int vectorSize = iLumiInfo.getProcessInfos().size();
+  double sigSelSum = 0.0;
+  double err2SelSum = 0.0;
+  //for(unsigned int ip=0; ip < vectorSize; ip++){
+  for(unsigned int ip=0; ip < theProcesses_size; ip++){
+    GenLumiInfoProduct::ProcessInfo proc = theProcesses[ip];
+    double hepxsec_value = proc.lheXSec().value();
+    double hepxsec_error = proc.lheXSec().error() <= 0? 0:proc.lheXSec().error();
+    sigSelSum += hepxsec_value;
+    err2SelSum += hepxsec_error*hepxsec_error;
+    std::cout << ip << " xsec cumulative per process " << sigSelSum << std::endl;
+  }
+  //XS assuming jet matching efficiency = 1
+  xsec     = sigSelSum;
+  xsecerr  = (sigSelSum > 0)? xsec*sqrt(err2SelSum/sigSelSum/sigSelSum):0;
+  std::cout << " Total xsec " << sigSelSum << std::endl;
 }
 
 // ------------ method fills 'descriptions' with the allowed parameters for the module  ------------
